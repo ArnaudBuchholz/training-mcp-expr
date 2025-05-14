@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -11,7 +12,7 @@ declare global {
 
 const server = new McpServer({
   name: 'training-mcp-expr',
-  version: JSON.parse(readFileSync('package.json', 'utf-8')).version,
+  version: JSON.parse(readFileSync(new URL(join(import.meta.url, '../package.json')).pathname, 'utf-8')).version,
 });
 
 server.tool('evaluate',
