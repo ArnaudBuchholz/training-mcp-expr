@@ -5,26 +5,26 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import 'punyexpr';
 
-// Should be part of punyexpr package
-declare global {
-  const punyexpr: (expr: string) => () => any;
-}
+const { name, version } = JSON.parse(readFileSync(new URL(join(import.meta.url, '../package.json')).pathname, 'utf-8'));
 
-const server = new McpServer({
-  name: 'training-mcp-expr',
-  version: JSON.parse(readFileSync(new URL(join(import.meta.url, '../package.json')).pathname, 'utf-8')).version,
-});
+// Since we use stdio transport, use stderr for logging
+console.error(`Starting ${name}@${version} server...`);
+console.error(`Using punyexpr@${punyexpr.version}`);
+
+const server = new McpServer({ name, version });
 
 server.tool('evaluate',
-  'Evaluate an mathematical expression, supports +, -, *, /, and ^',
+  'Evaluates a mathematical expression, supports most operators and parentheses',
   { expr: z.string() },
   async ({ expr }) => {
+    console.error(`Received expression: ${expr}`);
     try {
-      const value = punyexpr(expr)();
+      const value = global.punyexpr(expr)();
       return {
         content: [{ type: 'text', text: String(value) }]
       };
-    } catch {
+    } catch (e) {
+      console.error(`Error evaluating expression: ${e}`);
       return {
         content: [{ type: 'text', text: 'The expression could not be evaluated' }]
       };
