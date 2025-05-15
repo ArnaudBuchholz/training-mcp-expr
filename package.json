@@ -20,7 +20,7 @@
   "homepage": "https://github.com/ArnaudBuchholz/training-mcp-expr#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.2",
-    "punyexpr": "^1.0.4",
+    "punyexpr": "^1.1.1",
     "tsx": "^4.19.4",
     "zod": "^3.24.4"
   },

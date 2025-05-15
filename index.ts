@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import 'punyexpr';
+import { punyexpr } from 'punyexpr';
 
 const { name, version } = JSON.parse(readFileSync(new URL(join(import.meta.url, '../package.json')).pathname, 'utf-8'));
 
@@ -19,7 +19,9 @@ server.tool('evaluate',
   async ({ expr }) => {
     console.error(`Received expression: ${expr}`);
     try {
-      const value = global.punyexpr(expr)();
+      const evaluator = punyexpr(expr);
+      console.error(`Parsed expression: ${JSON.stringify(evaluator.toJSON())}`);
+      const value = evaluator();
       return {
         content: [{ type: 'text', text: String(value) }]
       };
